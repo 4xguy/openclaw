@@ -27,6 +27,10 @@ RUN apt-get update && \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /run/sshd
 
+# Pre-install Python packages for sub-agent accounting/data scripts
+RUN pip3 install --break-system-packages --no-cache-dir \
+      pandas numpy python-dateutil tabulate openpyxl
+
 # Configure sshd: port 2222, key-only auth, no root login
 RUN sed -i 's/^#\?Port .*/Port 2222/' /etc/ssh/sshd_config && \
     sed -i 's/^#\?PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config && \
