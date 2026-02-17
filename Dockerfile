@@ -16,12 +16,14 @@ RUN if [ -n "$OPENCLAW_DOCKER_APT_PACKAGES" ]; then \
       rm -rf /var/lib/apt/lists/* /var/cache/apt/archives/*; \
     fi
 
-# Install SSH server and gosu for remote access (Dokploy deployment)
+# Install SSH server, gosu, and Python tooling for remote access and sub-agent scripts
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
       openssh-server \
       git \
       gosu \
+      python3-pip \
+      python3-venv \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \
     && mkdir -p /run/sshd
 
