@@ -30,6 +30,18 @@ fi
 # Ensure volume mount ownership (Docker creates volumes as root)
 chown -R node:node /home/node/.openclaw 2>/dev/null || true
 
+# Ensure QMD is present in a persistent path under /home/node/.openclaw
+# (survives container redeploys because /home/node/.openclaw is a volume)
+QMD_PREFIX="/home/node/.openclaw/qmd-tools"
+QMD_BIN="$QMD_PREFIX/node_modules/.bin/qmd"
+if [ ! -x "$QMD_BIN" ]; then
+  echo "[entrypoint] qmd not found at $QMD_BIN; installing @tobilu/qmd..."
+  gosu node npm install --prefix "$QMD_PREFIX" @tobilu/qmd >/dev/null 2>&1 || true
+fi
+if [ -x "$QMD_BIN" ]; then
+  ln -sf "$QMD_BIN" /usr/local/bin/qmd || true
+fi
+
 # Auto-fix invalid config keys to prevent crash loops
 gosu node node /app/openclaw.mjs doctor --fix 2>/dev/null || true
 

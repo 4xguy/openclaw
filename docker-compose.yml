@@ -30,6 +30,7 @@ services:
     volumes:
       - openclaw-config:/home/node/.openclaw
       - openclaw-workspace:/home/node/.openclaw/workspace
+      - openclaw-cache:/home/node/.cache
       - /opt/openclaw-config:/home/node/.config/gwcli
       - /opt/hledger-data:/opt/hledger-data
     ports:
@@ -61,6 +62,7 @@ services:
 volumes:
   openclaw-config:
   openclaw-workspace:
+  openclaw-cache:
 
 networks:
   dokploy-network:

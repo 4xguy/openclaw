@@ -31,6 +31,9 @@ RUN apt-get update && \
 RUN pip3 install --break-system-packages --no-cache-dir \
       pandas numpy python-dateutil tabulate openpyxl
 
+# Install QMD memory CLI globally so it survives redeploys
+RUN npm install -g @tobilu/qmd && qmd --version
+
 # Configure sshd: port 2222, key-only auth, no root login
 RUN sed -i 's/^#\?Port .*/Port 2222/' /etc/ssh/sshd_config && \
     sed -i 's/^#\?PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config && \
