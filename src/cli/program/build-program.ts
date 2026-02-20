@@ -14,6 +14,12 @@ export function buildProgram() {
   configureProgramHelp(program, ctx);
   registerPreActionHooks(program, ctx.programVersion);
 
+  // enablePositionalOptions makes option parsing positional: options after a
+  // subcommand name are parsed by that subcommand, not the parent. This prevents
+  // the gateway parent command (which owns --token for `gateway run`) from
+  // consuming --token meant for `gateway call --token`.
+  program.enablePositionalOptions();
+
   registerProgramCommands(program, ctx, argv);
 
   return program;
