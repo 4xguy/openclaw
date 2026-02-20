@@ -73,6 +73,10 @@ RUN chown -R node:node /app
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
+# Add openclaw as a system command
+RUN printf '#!/bin/bash\nexec node /app/openclaw.mjs "$@"\n' > /usr/local/bin/openclaw && \
+    chmod +x /usr/local/bin/openclaw
+
 EXPOSE 18789 2222
 
 ENTRYPOINT ["docker-entrypoint.sh"]
