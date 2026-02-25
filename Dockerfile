@@ -23,6 +23,7 @@ RUN apt-get update && \
       openssh-server \
       git \
       gosu \
+      cron \
       python3-pip \
       python3-venv \
     && apt-get clean && rm -rf /var/lib/apt/lists/* \

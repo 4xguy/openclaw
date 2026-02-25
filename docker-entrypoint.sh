@@ -27,6 +27,13 @@ if [ -n "$SSH_PUBLIC_KEY" ]; then
   /usr/sbin/sshd
 fi
 
+# Start cron daemon for scheduled tasks (e.g. nightly memory maintenance)
+if command -v service >/dev/null 2>&1; then
+  service cron start || true
+elif command -v cron >/dev/null 2>&1; then
+  cron || true
+fi
+
 # Ensure volume mount ownership (Docker creates volumes as root)
 chown -R node:node /home/node/.openclaw 2>/dev/null || true
 
