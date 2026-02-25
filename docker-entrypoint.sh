@@ -52,5 +52,13 @@ fi
 # Auto-fix invalid config keys to prevent crash loops
 gosu node node /app/openclaw.mjs doctor --fix 2>/dev/null || true
 
+# Upstream now requires explicit Control UI origin policy for non-loopback gateways.
+# Keep explicit allowlists if present; otherwise enable Host-header fallback so
+# reverse-proxy deployments (e.g., Dokploy/Traefik) don't crash-loop.
+allowed_origins_compact="$(gosu node node /app/openclaw.mjs config get gateway.controlUi.allowedOrigins --json 2>/dev/null | tr -d '[:space:]' || true)"
+if [ -z "$allowed_origins_compact" ] || [ "$allowed_origins_compact" = "[]" ] || [ "$allowed_origins_compact" = "null" ]; then
+  gosu node node /app/openclaw.mjs config set gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback true 2>/dev/null || true
+fi
+
 # Drop privileges and exec the main command as node user
 exec gosu node "$@"
