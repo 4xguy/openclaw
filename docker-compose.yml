@@ -56,6 +56,24 @@ services:
       ]
     extra_hosts:
       - "host.docker.internal:host-gateway"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.docker.network=dokploy-network"
+
+      # HTTPS router for Nifty webhook receiver
+      - "traefik.http.routers.openclaw-nifty-webhook.rule=Host(`nifty-webhook.icvida.com`)"
+      - "traefik.http.routers.openclaw-nifty-webhook.entrypoints=websecure"
+      - "traefik.http.routers.openclaw-nifty-webhook.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.openclaw-nifty-webhook.service=openclaw-nifty-webhook"
+
+      # Service points to webhook receiver port
+      - "traefik.http.services.openclaw-nifty-webhook.loadbalancer.server.port=8787"
+
+      # Optional HTTP -> HTTPS redirect
+      - "traefik.http.routers.openclaw-nifty-webhook-web.rule=Host(`nifty-webhook.icvida.com`)"
+      - "traefik.http.routers.openclaw-nifty-webhook-web.entrypoints=web"
+      - "traefik.http.routers.openclaw-nifty-webhook-web.middlewares=redirect-to-https@file"
+      - "traefik.http.routers.openclaw-nifty-webhook-web.service=openclaw-nifty-webhook"
     networks:
       - dokploy-network
 
